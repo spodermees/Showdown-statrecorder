@@ -142,5 +142,36 @@
             {% endif %}
         </section>
     </main>
+
+    <script>
+        const matchId = {{ match.id }};
+        const liveStatusUrl = `/api/live_status?match_id=${encodeURIComponent(matchId)}`;
+        let liveMarker = null;
+
+        const pollLiveStatus = async () => {
+            try {
+                const response = await fetch(liveStatusUrl, { cache: 'no-store' });
+                if (!response.ok) return;
+                const payload = await response.json();
+                const marker = `${payload.last_event_id || 0}:${payload.last_log_id || 0}`;
+                if (liveMarker === null) {
+                    liveMarker = marker;
+                    return;
+                }
+                if (marker !== liveMarker) {
+                    window.location.reload();
+                }
+            } catch (_error) {
+            }
+        };
+
+        setInterval(() => {
+            if (document.hidden) return;
+            const activeElement = document.activeElement;
+            const typing = activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName);
+            if (typing) return;
+            pollLiveStatus();
+        }, 2000);
+    </script>
 </body>
 </html>

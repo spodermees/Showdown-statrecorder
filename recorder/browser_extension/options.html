@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EUIC Recorder Bridge Settings</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 20px;
+            width: 420px;
+            color: #1a1f2b;
+        }
+        h1 {
+            margin: 0 0 12px;
+            font-size: 18px;
+        }
+        .field {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        input[type="text"] {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #bec4d2;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 13px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 9px 12px;
+            background: #2d5cff;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #2a5b13;
+        }
+        .hint {
+            font-size: 12px;
+            color: #5b6374;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>EUIC Recorder Bridge</h1>
+
+    <div class="field">
+        <label for="apiUrl">Recorder API endpoint</label>
+        <input id="apiUrl" type="text" placeholder="http://127.0.0.1:5000/api/ingest_line" />
+        <div class="hint">Standaard: je lokale Flask app op poort 5000.</div>
+    </div>
+
+    <div class="field row">
+        <input id="enabled" type="checkbox" />
+        <label for="enabled" style="margin:0; font-weight:500;">Stream live logregels naar recorder</label>
+    </div>
+
+    <button id="save" type="button">Opslaan</button>
+    <div id="status"></div>
+
+    <script src="options.js"></script>
+</body>
+</html>

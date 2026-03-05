@@ -824,7 +824,7 @@ def get_team_by_id(team_id: int) -> dict | None:
 def get_or_create_default_team() -> dict:
     db = get_db()
     row = db.execute(
-        "SELECT id, name, updated_at FROM prep_teams ORDER BY id ASC LIMIT 1"
+        "SELECT id, name, updated_at FROM prep_teams ORDER BY updated_at DESC, id DESC LIMIT 1"
     ).fetchone()
     if row:
         return dict(row)
@@ -865,6 +865,16 @@ def resolve_team_id(raw_value: object | None) -> int:
         if team:
             return team["id"]
     return default_team["id"]
+
+
+def mark_team_active(team_id: int) -> None:
+    db = get_db()
+    now = datetime.utcnow().isoformat(timespec="seconds")
+    db.execute(
+        "UPDATE prep_teams SET updated_at = ? WHERE id = ?",
+        (now, team_id),
+    )
+    db.commit()
 
 
 def list_team_pokemon(team_id: int) -> list[dict]:
@@ -958,6 +968,9 @@ def index():
     db = get_db()
     active_team_id = resolve_team_id(request.args.get("team_id"))
     active_team = get_team_by_id(active_team_id)
+    if active_team:
+        mark_team_active(active_team_id)
+        active_team = get_team_by_id(active_team_id)
     teams = list_prep_teams()
     team_pokemon = list_team_pokemon(active_team_id)
 
@@ -1108,6 +1121,9 @@ def index():
 def prep():
     active_team_id = resolve_team_id(request.args.get("team_id"))
     active_team = get_team_by_id(active_team_id)
+    if active_team:
+        mark_team_active(active_team_id)
+        active_team = get_team_by_id(active_team_id)
     matchups = list_prep_matchups_for_team(active_team_id)
     return render_template(
         "prep.html",
@@ -1141,8 +1157,12 @@ def api_create_prep_matchup():
     return {"ok": True, "id": cursor.lastrowid, "title": title, "team_id": team_id}
 
 
-@app.route("/api/prep_teams", methods=["POST"])
+@app.route("/api/prep_teams", methods=["GET", "POST"])
 def api_create_prep_team():
+    if request.method == "GET":
+        teams = list_prep_teams()
+        return {"ok": True, "teams": teams}
+
     data = request.get_json(silent=True) or {}
     name = str(data.get("name", "")).strip()
     if not name:
@@ -1619,6 +1639,81 @@ def api_ingest_line():
 @app.route("/api/ingest_line", methods=["OPTIONS"])
 def api_ingest_line_options():
     return {"status": "ok"}
+
+
+@app.route("/api/poke", methods=["POST"])
+def api_poke():
+    data = request.get_json(silent=True) or {}
+    return {
+        "status": "ok",
+        "source": str(data.get("source", "extension")),
+        "reason": str(data.get("reason", "poke")),
+        "time": datetime.utcnow().isoformat(timespec="seconds"),
+    }
+
+
+@app.route("/api/poke", methods=["OPTIONS"])
+def api_poke_options():
+    return {"status": "ok"}
+
+
+@app.route("/api/live_status")
+def api_live_status():
+    db = get_db()
+    match_id_raw = (request.args.get("match_id") or "").strip()
+
+    if match_id_raw.isdigit():
+        match_id = int(match_id_raw)
+        event_row = db.execute(
+            "SELECT COALESCE(MAX(id), 0) AS max_id FROM events WHERE match_id = ?",
+            (match_id,),
+        ).fetchone()
+        log_row = db.execute(
+            "SELECT COALESCE(MAX(id), 0) AS max_id FROM log_lines WHERE match_id = ?",
+            (match_id,),
+        ).fetchone()
+        return {
+            "ok": True,
+            "scope": "match",
+            "match_id": match_id,
+            "last_event_id": int(event_row["max_id"] if event_row else 0),
+            "last_log_id": int(log_row["max_id"] if log_row else 0),
+        }
+
+    team_id = resolve_team_id(request.args.get("team_id"))
+    match_row = db.execute(
+        "SELECT id FROM matches WHERE team_id = ? ORDER BY id DESC LIMIT 1",
+        (team_id,),
+    ).fetchone()
+    latest_match_id = int(match_row["id"]) if match_row else 0
+
+    event_row = db.execute(
+        """
+        SELECT COALESCE(MAX(events.id), 0) AS max_id
+        FROM events
+        INNER JOIN matches ON matches.id = events.match_id
+        WHERE matches.team_id = ?
+        """,
+        (team_id,),
+    ).fetchone()
+    log_row = db.execute(
+        """
+        SELECT COALESCE(MAX(log_lines.id), 0) AS max_id
+        FROM log_lines
+        INNER JOIN matches ON matches.id = log_lines.match_id
+        WHERE matches.team_id = ?
+        """,
+        (team_id,),
+    ).fetchone()
+
+    return {
+        "ok": True,
+        "scope": "team",
+        "team_id": team_id,
+        "match_id": latest_match_id,
+        "last_event_id": int(event_row["max_id"] if event_row else 0),
+        "last_log_id": int(log_row["max_id"] if log_row else 0),
+    }
 
 
 @app.route("/api/showdown_rating")
