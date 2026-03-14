@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pokemon tracker | Showdown Recorder (Static)</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body data-active-team-id="3">
+    <header class="app-header">
+        <div>
+            <h1 class="title-with-icon"><span class="poke-icon poke-icon-ball" aria-hidden="true"></span>Pokemon tracker</h1>
+            <p>Static prep weergave op basis van geëxporteerde data.</p>
+        </div>
+        <div class="actions">
+            <a class="button button-with-icon" href="index.html"><span class="poke-icon poke-icon-bolt" aria-hidden="true"></span>Back</a>
+            
+                <label class="sr-only" for="prep-team-select-static">Selecteer team</label>
+                <select id="prep-team-select-static" aria-label="Selecteer team">
+                    
+                        <option value="prep-all-teams.html" >Alle teams</option>
+                    
+                        <option value="prep.html" selected>calyogre</option>
+                    
+                        <option value="teams/prep-team-1.html" >Team 1</option>
+                    
+                        <option value="teams/prep-team-2.html" >perish trap</option>
+                    
+                </select>
+            
+        </div>
+    </header>
+
+    <main class="container">
+        
+            <section class="card">
+                <h2 class="title-with-icon"><span class="poke-icon poke-icon-star" aria-hidden="true"></span>Overzicht · calyogre</h2>
+                <div class="prep-toolbar">
+                    <input type="text" id="pokemon-search" placeholder="Zoek Pokemon...">
+                    <p class="muted" id="pokemon-summary">
+                        0/0 matches met teamsheet data · 0 unieke Pokemon · 0 teampatronen
+                    </p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3 class="title-with-icon"><span class="poke-icon poke-icon-bolt" aria-hidden="true"></span>Meest voorkomende tegenstander-teams</h3>
+                <div class="prep-insights-teams">
+                    
+                        <span class="muted">Nog geen teamcombinaties gevonden.</span>
+                    
+                </div>
+            </section>
+
+            <section class="prep-insights-grid" id="pokemon-grid">
+                
+                    <div class="card">
+                        <p class="muted">Nog geen tegenstander-Pokemon gevonden voor dit team.</p>
+                    </div>
+                
+            </section>
+        
+    </main>
+
+    <div class="modal" id="mon-modal" aria-hidden="true">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="mon-modal-title">Pokemon details</h3>
+                <button type="button" class="button" id="mon-modal-close">Sluiten</button>
+            </header>
+            <div class="modal-body">
+                <div class="insight-tags" id="mon-modal-stats"></div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Lead flowchart</span>
+                    <div class="mini-flow" id="mon-modal-flow-lead"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Non-lead flowchart</span>
+                    <div class="mini-flow" id="mon-modal-flow-nonlead"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Top moves</span>
+                    <div class="insight-tags" id="mon-modal-moves"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Top turn 1 moves</span>
+                    <div class="insight-tags" id="mon-modal-turn1"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Top teammates</span>
+                    <div class="insight-tags" id="mon-modal-teammates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const prepTeamSelectStatic = document.getElementById('prep-team-select-static');
+        prepTeamSelectStatic?.addEventListener('change', () => {
+            const target = prepTeamSelectStatic.value;
+            if (target) {
+                window.location.href = target;
+            }
+        });
+
+        const pokemonSearch = document.getElementById('pokemon-search');
+        const pokemonGrid = document.getElementById('pokemon-grid');
+        const monModal = document.getElementById('mon-modal');
+        const monModalTitle = document.getElementById('mon-modal-title');
+        const monModalStats = document.getElementById('mon-modal-stats');
+        const monModalFlowLead = document.getElementById('mon-modal-flow-lead');
+        const monModalFlowNonLead = document.getElementById('mon-modal-flow-nonlead');
+        const monModalMoves = document.getElementById('mon-modal-moves');
+        const monModalTurn1 = document.getElementById('mon-modal-turn1');
+        const monModalTeammates = document.getElementById('mon-modal-teammates');
+        const monModalClose = document.getElementById('mon-modal-close');
+        const MIN_PATH_COUNT = 3;
+
+        const filterPokemonCards = () => {
+            if (!pokemonSearch || !pokemonGrid) return;
+            const query = pokemonSearch.value.trim().toLowerCase();
+            pokemonGrid.querySelectorAll('.pokemon-card').forEach((card) => {
+                const name = card.getAttribute('data-name') || '';
+                card.style.display = !query || name.includes(query) ? '' : 'none';
+            });
+        };
+
+        const renderTags = (container, rows, emptyText) => {
+            if (!container) return;
+            if (!Array.isArray(rows) || rows.length === 0) {
+                container.innerHTML = `<span class="muted">${emptyText}</span>`;
+                return;
+            }
+            container.innerHTML = rows.slice(0, 10)
+                .map((row) => `<span class="insight-tag">${row.name} <strong>${row.count}x</strong></span>`)
+                .join('');
+        };
+
+        const renderPathFlow = (container, monName, headerText, movePaths, summaryText) => {
+            if (!container) return;
+            const filteredPaths = Array.isArray(movePaths)
+                ? movePaths.filter((entry) => Number(entry?.count || 0) >= MIN_PATH_COUNT)
+                : [];
+            if (filteredPaths.length === 0) {
+                container.innerHTML = `
+                    <div class="mini-flow-step">Start: zie ${monName}</div>
+                    <div class="mini-flow-arrow">↓</div>
+                    <div class="mini-flow-step">${headerText}: nog geen pad met minstens ${MIN_PATH_COUNT} waarnemingen.</div>
+                `;
+                return;
+            }
+            const pathHtml = filteredPaths.slice(0, 4).map((entry, index) => {
+                const rawPath = String(entry?.path || '');
+                const steps = rawPath.split(' -> ').map((step) => step.trim()).filter(Boolean);
+                const stepsHtml = steps
+                    .map((step) => `<span class="mini-flow-step-pill">${step}</span>`)
+                    .join('<span class="mini-flow-arrow-inline">-></span>');
+                const count = Number(entry?.count || 0);
+                return `
+                    <div class="mini-flow-branch">
+                        <strong>Pad ${index + 1} (${count}x)</strong>
+                        <span>${stepsHtml || 'Geen stappen'}</span>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = `
+                <div class="mini-flow-step">Start: zie ${monName}</div>
+                <div class="mini-flow-arrow">↓</div>
+                <div class="mini-flow-step">${headerText} · ${summaryText} · filter n >= ${MIN_PATH_COUNT}</div>
+                <div class="mini-flow-split">${pathHtml}</div>
+            `;
+        };
+
+        const openMonModal = (mon, matchesWithData) => {
+            if (!monModal || !monModalTitle) return;
+            const seen = Number(mon?.seen || 0);
+            const brought = Number(mon?.brought || 0);
+            const lead = Number(mon?.lead || 0);
+            const matches = Number(matchesWithData || 0);
+            const leadRate = brought > 0 ? Math.round((lead / brought) * 100) : 0;
+            const broughtRate = matches > 0 ? Math.round((brought / matches) * 100) : 0;
+
+            monModalTitle.textContent = `${mon?.name || 'Pokemon'} · extra stats`;
+            monModalStats.innerHTML = `
+                <span class="insight-tag">Gezien <strong>${seen}x</strong></span>
+                <span class="insight-tag">Gebracht <strong>${brought}x (${broughtRate}%)</strong></span>
+                <span class="insight-tag">Lead <strong>${lead}x (${leadRate}%)</strong></span>
+            `;
+
+            const leadPaths = Array.isArray(mon?.lead_move_paths) ? mon.lead_move_paths : [];
+            const nonLeadPaths = Array.isArray(mon?.nonlead_move_paths) ? mon.nonlead_move_paths : [];
+            renderPathFlow(monModalFlowLead, mon?.name || 'deze Pokemon', 'Lead situaties', leadPaths, `lead rate ${leadRate}%`);
+            renderPathFlow(monModalFlowNonLead, mon?.name || 'deze Pokemon', 'Non-lead situaties', nonLeadPaths, `gebracht rate ${broughtRate}%`);
+
+            renderTags(monModalMoves, mon?.moves, 'Geen moves gezien');
+            renderTags(monModalTurn1, mon?.turn1_moves, 'Geen turn 1 moves gezien');
+            renderTags(monModalTeammates, mon?.teammates, 'Geen teammates gezien');
+
+            monModal.classList.add('open');
+            monModal.setAttribute('aria-hidden', 'false');
+        };
+
+        pokemonSearch?.addEventListener('input', filterPokemonCards);
+
+        pokemonGrid?.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            const card = target.closest('.pokemon-card');
+            if (!card) return;
+            const rawMon = card.getAttribute('data-mon');
+            if (!rawMon) return;
+            let mon;
+            try {
+                mon = JSON.parse(rawMon);
+            } catch (error) {
+                return;
+            }
+            const matchesWithData = Number(card.getAttribute('data-team-matches') || 0);
+            openMonModal(mon, matchesWithData);
+        });
+
+        monModalClose?.addEventListener('click', () => {
+            monModal?.classList.remove('open');
+            monModal?.setAttribute('aria-hidden', 'true');
+        });
+
+        monModal?.addEventListener('click', (event) => {
+            if (event.target === monModal) {
+                monModal.classList.remove('open');
+                monModal.setAttribute('aria-hidden', 'true');
+            }
+        });
+    </script>
+</body>
+</html>

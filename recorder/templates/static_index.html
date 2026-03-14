@@ -18,10 +18,15 @@
             <h1 class="title-with-icon"><span class="poke-icon poke-icon-ball" aria-hidden="true"></span>Showdown Recorder</h1>
             <p>Static snapshot for mobile viewing.</p>
         </div>
-        {% if active_team %}
+        {% if active_team or team_nav_options %}
             <div class="actions">
-                <span class="chip">Team: {{ active_team.name }}</span>
-                {% if teams|length > 1 %}
+                <a class="chip" href="{{ prep_url or '#' }}">Prep</a>
+                {% if active_team %}
+                    <span class="chip">Team: {{ active_team.name }}</span>
+                {% else %}
+                    <span class="chip">Weergave: Alle teams</span>
+                {% endif %}
+                {% if teams|length > 1 or team_nav_options %}
                     <span class="chip">{{ teams|length }} teams</span>
                     {% if team_nav_options %}
                         <label class="sr-only" for="team-select-static">Selecteer team</label>

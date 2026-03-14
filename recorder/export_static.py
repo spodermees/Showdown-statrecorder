@@ -8,7 +8,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from app import DB_PATH, MY_POKEMON_PRESET, PREP_SECTIONS
+from app import DB_PATH, MY_POKEMON_PRESET, PREP_SECTIONS, app as flask_app, build_team_pokemon_insights
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -332,6 +332,22 @@ def _build_export_context(
     }
 
 
+def _build_prep_insights(team_id: int | None) -> dict:
+    if team_id is None:
+        return {
+            "summary": {
+                "matches": 0,
+                "matches_with_team_data": 0,
+                "unique_pokemon": 0,
+                "unique_team_patterns": 0,
+            },
+            "observed_teams": [],
+            "pokemon": [],
+        }
+    with flask_app.app_context():
+        return build_team_pokemon_insights(team_id)
+
+
 def export_site() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_STATIC_DIR.mkdir(parents=True, exist_ok=True)
@@ -361,11 +377,34 @@ def export_site() -> None:
     env.filters["tojson"] = lambda value: json.dumps(value, ensure_ascii=False)
 
     template = env.get_template("static_index.html")
+    prep_template = env.get_template("static_prep.html")
 
-    def render_page(output_path: Path, static_prefix: str, context: dict, team_nav_options: list[dict]) -> None:
+    def render_page(
+        output_path: Path,
+        static_prefix: str,
+        context: dict,
+        team_nav_options: list[dict],
+        prep_url: str,
+    ) -> None:
         html = template.render(
             **context,
             team_nav_options=team_nav_options,
+            prep_url=prep_url,
+            static_prefix=static_prefix,
+        )
+        output_path.write_text(html, encoding="utf-8")
+
+    def render_prep_page(
+        output_path: Path,
+        static_prefix: str,
+        prep_context: dict,
+        team_nav_options: list[dict],
+        index_url: str,
+    ) -> None:
+        html = prep_template.render(
+            **prep_context,
+            team_nav_options=team_nav_options,
+            index_url=index_url,
             static_prefix=static_prefix,
         )
         output_path.write_text(html, encoding="utf-8")
@@ -376,9 +415,26 @@ def export_site() -> None:
 
     selected_team = next((team for team in teams if int(team["id"]) == selected_team_id), None)
     selected_context = _build_export_context(db, selected_team_id, selected_team, teams)
+    all_teams_context = _build_export_context(db, None, None, teams)
 
     docs_nav_options = []
     root_nav_options = []
+    docs_nav_options.append(
+        {
+            "id": "all",
+            "name": "Alle teams",
+            "url": "all-teams.html",
+            "selected": False,
+        }
+    )
+    root_nav_options.append(
+        {
+            "id": "all",
+            "name": "Alle teams",
+            "url": "docs/all-teams.html",
+            "selected": False,
+        }
+    )
     for team in teams:
         team_id = int(team["id"])
         docs_nav_options.append(
@@ -398,26 +454,163 @@ def export_site() -> None:
             }
         )
 
-    render_page(OUTPUT_DIR / "index.html", "static", selected_context, docs_nav_options)
-    render_page(BASE_DIR.parent / "index_website.html", "docs/static", selected_context, root_nav_options)
+    docs_all_nav_options = []
+    root_all_nav_options = []
+    docs_all_nav_options.append(
+        {
+            "id": "all",
+            "name": "Alle teams",
+            "url": "all-teams.html",
+            "selected": True,
+        }
+    )
+    root_all_nav_options.append(
+        {
+            "id": "all",
+            "name": "Alle teams",
+            "url": "docs/all-teams.html",
+            "selected": True,
+        }
+    )
+    for team in teams:
+        team_id = int(team["id"])
+        docs_all_nav_options.append(
+            {
+                "id": team_id,
+                "name": team["name"],
+                "url": f"teams/team-{team_id}.html",
+                "selected": False,
+            }
+        )
+        root_all_nav_options.append(
+            {
+                "id": team_id,
+                "name": team["name"],
+                "url": f"docs/teams/team-{team_id}.html",
+                "selected": False,
+            }
+        )
+
+    render_page(OUTPUT_DIR / "index.html", "static", selected_context, docs_nav_options, "prep.html")
+    render_page(BASE_DIR.parent / "index_website.html", "docs/static", selected_context, root_nav_options, "docs/prep.html")
+    render_page(OUTPUT_DIR / "all-teams.html", "static", all_teams_context, docs_all_nav_options, "prep-all-teams.html")
+
+    selected_prep_context = {
+        "active_team": selected_team,
+        "teams": teams,
+        "insights": _build_prep_insights(selected_team_id),
+        "is_all_teams": False,
+    }
+    all_prep_context = {
+        "active_team": None,
+        "teams": teams,
+        "insights": _build_prep_insights(None),
+        "is_all_teams": True,
+    }
+
+    docs_prep_nav_options = [
+        {
+            "id": "all",
+            "name": "Alle teams",
+            "url": "prep-all-teams.html",
+            "selected": False,
+        }
+    ]
+    docs_prep_all_nav_options = [
+        {
+            "id": "all",
+            "name": "Alle teams",
+            "url": "prep-all-teams.html",
+            "selected": True,
+        }
+    ]
+    for team in teams:
+        team_id = int(team["id"])
+        docs_prep_nav_options.append(
+            {
+                "id": team_id,
+                "name": team["name"],
+                "url": "prep.html" if team_id == selected_team_id else f"teams/prep-team-{team_id}.html",
+                "selected": team_id == selected_team_id,
+            }
+        )
+        docs_prep_all_nav_options.append(
+            {
+                "id": team_id,
+                "name": team["name"],
+                "url": f"teams/prep-team-{team_id}.html",
+                "selected": False,
+            }
+        )
+
+    render_prep_page(OUTPUT_DIR / "prep.html", "static", selected_prep_context, docs_prep_nav_options, "index.html")
+    render_prep_page(
+        OUTPUT_DIR / "prep-all-teams.html",
+        "static",
+        all_prep_context,
+        docs_prep_all_nav_options,
+        "all-teams.html",
+    )
 
     for team in teams:
         team_id = int(team["id"])
         team_context = _build_export_context(db, team_id, team, teams)
         team_nav_options = [
             {
-                "id": int(candidate["id"]),
-                "name": candidate["name"],
-                "url": "../index.html" if int(candidate["id"]) == selected_team_id else f"team-{int(candidate['id'])}.html",
-                "selected": int(candidate["id"]) == team_id,
+                "id": "all",
+                "name": "Alle teams",
+                "url": "../all-teams.html",
+                "selected": False,
             }
-            for candidate in teams
         ]
+        for candidate in teams:
+            candidate_id = int(candidate["id"])
+            team_nav_options.append(
+                {
+                    "id": candidate_id,
+                    "name": candidate["name"],
+                    "url": "../index.html" if candidate_id == selected_team_id else f"team-{candidate_id}.html",
+                    "selected": candidate_id == team_id,
+                }
+            )
         render_page(
             OUTPUT_TEAMS_DIR / f"team-{team_id}.html",
             "../static",
             team_context,
             team_nav_options,
+            f"prep-team-{team_id}.html",
+        )
+
+        team_prep_context = {
+            "active_team": team,
+            "teams": teams,
+            "insights": _build_prep_insights(team_id),
+            "is_all_teams": False,
+        }
+        team_prep_nav_options = [
+            {
+                "id": "all",
+                "name": "Alle teams",
+                "url": "../prep-all-teams.html",
+                "selected": False,
+            }
+        ]
+        for candidate in teams:
+            candidate_id = int(candidate["id"])
+            team_prep_nav_options.append(
+                {
+                    "id": candidate_id,
+                    "name": candidate["name"],
+                    "url": "../prep.html" if candidate_id == selected_team_id else f"prep-team-{candidate_id}.html",
+                    "selected": candidate_id == team_id,
+                }
+            )
+        render_prep_page(
+            OUTPUT_TEAMS_DIR / f"prep-team-{team_id}.html",
+            "../static",
+            team_prep_context,
+            team_prep_nav_options,
+            f"team-{team_id}.html",
         )
 
     shutil.copytree(BASE_DIR / "static", OUTPUT_STATIC_DIR, dirs_exist_ok=True)

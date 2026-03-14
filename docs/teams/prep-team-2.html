@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pokemon tracker | Showdown Recorder (Static)</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body data-active-team-id="2">
+    <header class="app-header">
+        <div>
+            <h1 class="title-with-icon"><span class="poke-icon poke-icon-ball" aria-hidden="true"></span>Pokemon tracker</h1>
+            <p>Static prep weergave op basis van geëxporteerde data.</p>
+        </div>
+        <div class="actions">
+            <a class="button button-with-icon" href="team-2.html"><span class="poke-icon poke-icon-bolt" aria-hidden="true"></span>Back</a>
+            
+                <label class="sr-only" for="prep-team-select-static">Selecteer team</label>
+                <select id="prep-team-select-static" aria-label="Selecteer team">
+                    
+                        <option value="../prep-all-teams.html" >Alle teams</option>
+                    
+                        <option value="../prep.html" >calyogre</option>
+                    
+                        <option value="prep-team-1.html" >Team 1</option>
+                    
+                        <option value="prep-team-2.html" selected>perish trap</option>
+                    
+                </select>
+            
+        </div>
+    </header>
+
+    <main class="container">
+        
+            <section class="card">
+                <h2 class="title-with-icon"><span class="poke-icon poke-icon-star" aria-hidden="true"></span>Overzicht · perish trap</h2>
+                <div class="prep-toolbar">
+                    <input type="text" id="pokemon-search" placeholder="Zoek Pokemon...">
+                    <p class="muted" id="pokemon-summary">
+                        25/25 matches met teamsheet data · 18 unieke Pokemon · 3 teampatronen
+                    </p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3 class="title-with-icon"><span class="poke-icon poke-icon-bolt" aria-hidden="true"></span>Meest voorkomende tegenstander-teams</h3>
+                <div class="prep-insights-teams">
+                    
+                        <div class="prep-insight-team">
+                            <span>Incineroar, Landorus, Raging Bolt, Rillaboom, Tornadus, Urshifu-*, Urshifu-Rapid-Strike</span>
+                            <strong>15x</strong>
+                        </div>
+                    
+                        <div class="prep-insight-team">
+                            <span>Bronzong, Clefable, Golurk, Gothitelle, Incineroar, Lapras</span>
+                            <strong>6x</strong>
+                        </div>
+                    
+                        <div class="prep-insight-team">
+                            <span>Electivire, Flamigo, Iron Bundle, Kleavor, Magmortar, Regidrago</span>
+                            <strong>4x</strong>
+                        </div>
+                    
+                </div>
+            </section>
+
+            <section class="prep-insights-grid" id="pokemon-grid">
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="incineroar"
+                        data-mon='{"name": "Incineroar", "seen": 21, "brought": 21, "lead": 15, "items": [], "moves": [{"name": "Fake Out", "count": 21}, {"name": "Knock Off", "count": 21}, {"name": "Flare Blitz", "count": 2}], "turn1_moves": [{"name": "Fake Out", "count": 15}], "move_paths": [{"path": "Fake Out -> Knock Off", "count": 15}, {"path": "Knock Off -> Knock Off", "count": 2}, {"path": "Fake Out -> Knock Off -> Fake Out -> Flare Blitz", "count": 2}, {"path": "Fake Out", "count": 2}], "lead_move_paths": [{"path": "Fake Out -> Knock Off", "count": 15}], "nonlead_move_paths": [{"path": "Knock Off -> Knock Off", "count": 2}, {"path": "Fake Out -> Knock Off -> Fake Out -> Flare Blitz", "count": 2}, {"path": "Fake Out", "count": 2}], "teammates": [{"name": "Landorus", "count": 15}, {"name": "Raging Bolt", "count": 15}, {"name": "Rillaboom", "count": 15}, {"name": "Tornadus", "count": 15}, {"name": "Urshifu-*", "count": 15}, {"name": "Urshifu-Rapid-Strike", "count": 15}, {"name": "Bronzong", "count": 6}, {"name": "Clefable", "count": 6}, {"name": "Golurk", "count": 6}, {"name": "Gothitelle", "count": 6}, {"name": "Lapras", "count": 6}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}, {"signature": "Bronzong / Clefable / Golurk / Gothitelle / Incineroar / Lapras", "count": 6}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Incineroar</h4>
+                            <span class="muted">Gezien 21x · gebracht 21x · lead 15x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Fake Out <strong>21x</strong></span>
+                                
+                                    <span class="insight-tag">Knock Off <strong>21x</strong></span>
+                                
+                                    <span class="insight-tag">Flare Blitz <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Landorus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Raging Bolt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Rillaboom <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Tornadus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-* <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-Rapid-Strike <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Bronzong <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Clefable <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Golurk <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Gothitelle <strong>6x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="landorus"
+                        data-mon='{"name": "Landorus", "seen": 15, "brought": 15, "lead": 0, "items": [], "moves": [{"name": "Sludge Bomb", "count": 45}, {"name": "Earth Power", "count": 15}, {"name": "Substitute", "count": 15}], "turn1_moves": [], "move_paths": [{"path": "Earth Power -> Substitute -> Sludge Bomb -> Sludge Bomb", "count": 15}], "lead_move_paths": [], "nonlead_move_paths": [{"path": "Earth Power -> Substitute -> Sludge Bomb -> Sludge Bomb", "count": 15}], "teammates": [{"name": "Incineroar", "count": 15}, {"name": "Raging Bolt", "count": 15}, {"name": "Rillaboom", "count": 15}, {"name": "Tornadus", "count": 15}, {"name": "Urshifu-*", "count": 15}, {"name": "Urshifu-Rapid-Strike", "count": 15}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Landorus</h4>
+                            <span class="muted">Gezien 15x · gebracht 15x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Sludge Bomb <strong>45x</strong></span>
+                                
+                                    <span class="insight-tag">Earth Power <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Substitute <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Incineroar <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Raging Bolt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Rillaboom <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Tornadus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-* <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-Rapid-Strike <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="raging bolt"
+                        data-mon='{"name": "Raging Bolt", "seen": 15, "brought": 0, "lead": 0, "items": [], "moves": [], "turn1_moves": [], "move_paths": [], "lead_move_paths": [], "nonlead_move_paths": [], "teammates": [{"name": "Incineroar", "count": 15}, {"name": "Landorus", "count": 15}, {"name": "Rillaboom", "count": 15}, {"name": "Tornadus", "count": 15}, {"name": "Urshifu-*", "count": 15}, {"name": "Urshifu-Rapid-Strike", "count": 15}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Raging Bolt</h4>
+                            <span class="muted">Gezien 15x · gebracht 0x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen moves gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Incineroar <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Landorus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Rillaboom <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Tornadus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-* <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-Rapid-Strike <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="rillaboom"
+                        data-mon='{"name": "Rillaboom", "seen": 15, "brought": 0, "lead": 0, "items": [], "moves": [], "turn1_moves": [], "move_paths": [], "lead_move_paths": [], "nonlead_move_paths": [], "teammates": [{"name": "Incineroar", "count": 15}, {"name": "Landorus", "count": 15}, {"name": "Raging Bolt", "count": 15}, {"name": "Tornadus", "count": 15}, {"name": "Urshifu-*", "count": 15}, {"name": "Urshifu-Rapid-Strike", "count": 15}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Rillaboom</h4>
+                            <span class="muted">Gezien 15x · gebracht 0x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen moves gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Incineroar <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Landorus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Raging Bolt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Tornadus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-* <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-Rapid-Strike <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="tornadus"
+                        data-mon='{"name": "Tornadus", "seen": 15, "brought": 15, "lead": 15, "items": [], "moves": [{"name": "Tailwind", "count": 15}, {"name": "Taunt", "count": 15}, {"name": "Bleakwind Storm", "count": 15}], "turn1_moves": [{"name": "Tailwind", "count": 15}], "move_paths": [{"path": "Tailwind -> Taunt -> Bleakwind Storm", "count": 15}], "lead_move_paths": [{"path": "Tailwind -> Taunt -> Bleakwind Storm", "count": 15}], "nonlead_move_paths": [], "teammates": [{"name": "Incineroar", "count": 15}, {"name": "Landorus", "count": 15}, {"name": "Raging Bolt", "count": 15}, {"name": "Rillaboom", "count": 15}, {"name": "Urshifu-*", "count": 15}, {"name": "Urshifu-Rapid-Strike", "count": 15}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Tornadus</h4>
+                            <span class="muted">Gezien 15x · gebracht 15x · lead 15x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Tailwind <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Taunt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Bleakwind Storm <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Incineroar <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Landorus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Raging Bolt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Rillaboom <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-* <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-Rapid-Strike <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="urshifu-*"
+                        data-mon='{"name": "Urshifu-*", "seen": 15, "brought": 0, "lead": 0, "items": [], "moves": [], "turn1_moves": [], "move_paths": [], "lead_move_paths": [], "nonlead_move_paths": [], "teammates": [{"name": "Incineroar", "count": 15}, {"name": "Landorus", "count": 15}, {"name": "Raging Bolt", "count": 15}, {"name": "Rillaboom", "count": 15}, {"name": "Tornadus", "count": 15}, {"name": "Urshifu-Rapid-Strike", "count": 15}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Urshifu-*</h4>
+                            <span class="muted">Gezien 15x · gebracht 0x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen moves gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Incineroar <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Landorus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Raging Bolt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Rillaboom <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Tornadus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-Rapid-Strike <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="urshifu-rapid-strike"
+                        data-mon='{"name": "Urshifu-Rapid-Strike", "seen": 15, "brought": 15, "lead": 0, "items": [], "moves": [{"name": "Aqua Jet", "count": 45}, {"name": "Surging Strikes", "count": 15}], "turn1_moves": [], "move_paths": [{"path": "Aqua Jet -> Aqua Jet -> Aqua Jet -> Surging Strikes", "count": 15}], "lead_move_paths": [], "nonlead_move_paths": [{"path": "Aqua Jet -> Aqua Jet -> Aqua Jet -> Surging Strikes", "count": 15}], "teammates": [{"name": "Incineroar", "count": 15}, {"name": "Landorus", "count": 15}, {"name": "Raging Bolt", "count": 15}, {"name": "Rillaboom", "count": 15}, {"name": "Tornadus", "count": 15}, {"name": "Urshifu-*", "count": 15}], "teams": [{"signature": "Incineroar / Landorus / Raging Bolt / Rillaboom / Tornadus / Urshifu-* / Urshifu-Rapid-Strike", "count": 15}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Urshifu-Rapid-Strike</h4>
+                            <span class="muted">Gezien 15x · gebracht 15x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Aqua Jet <strong>45x</strong></span>
+                                
+                                    <span class="insight-tag">Surging Strikes <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Incineroar <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Landorus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Raging Bolt <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Rillaboom <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Tornadus <strong>15x</strong></span>
+                                
+                                    <span class="insight-tag">Urshifu-* <strong>15x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="bronzong"
+                        data-mon='{"name": "Bronzong", "seen": 6, "brought": 4, "lead": 4, "items": [], "moves": [{"name": "Skill Swap", "count": 6}, {"name": "Hypnosis", "count": 4}, {"name": "Trick Room", "count": 2}], "turn1_moves": [{"name": "Skill Swap", "count": 2}], "move_paths": [{"path": "Trick Room -> Skill Swap -> Skill Swap", "count": 2}, {"path": "Skill Swap -> Hypnosis -> Hypnosis", "count": 2}], "lead_move_paths": [{"path": "Trick Room -> Skill Swap -> Skill Swap", "count": 2}, {"path": "Skill Swap -> Hypnosis -> Hypnosis", "count": 2}], "nonlead_move_paths": [], "teammates": [{"name": "Clefable", "count": 6}, {"name": "Golurk", "count": 6}, {"name": "Gothitelle", "count": 6}, {"name": "Incineroar", "count": 6}, {"name": "Lapras", "count": 6}], "teams": [{"signature": "Bronzong / Clefable / Golurk / Gothitelle / Incineroar / Lapras", "count": 6}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Bronzong</h4>
+                            <span class="muted">Gezien 6x · gebracht 4x · lead 4x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Skill Swap <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Hypnosis <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Trick Room <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Clefable <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Golurk <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Gothitelle <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Incineroar <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Lapras <strong>6x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="clefable"
+                        data-mon='{"name": "Clefable", "seen": 6, "brought": 2, "lead": 0, "items": [], "moves": [{"name": "Heal Pulse", "count": 4}, {"name": "Follow Me", "count": 2}], "turn1_moves": [], "move_paths": [{"path": "Heal Pulse -> Heal Pulse -> Follow Me", "count": 2}], "lead_move_paths": [], "nonlead_move_paths": [{"path": "Heal Pulse -> Heal Pulse -> Follow Me", "count": 2}], "teammates": [{"name": "Bronzong", "count": 6}, {"name": "Golurk", "count": 6}, {"name": "Gothitelle", "count": 6}, {"name": "Incineroar", "count": 6}, {"name": "Lapras", "count": 6}], "teams": [{"signature": "Bronzong / Clefable / Golurk / Gothitelle / Incineroar / Lapras", "count": 6}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Clefable</h4>
+                            <span class="muted">Gezien 6x · gebracht 2x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Heal Pulse <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Follow Me <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Bronzong <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Golurk <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Gothitelle <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Incineroar <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Lapras <strong>6x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="golurk"
+                        data-mon='{"name": "Golurk", "seen": 6, "brought": 4, "lead": 4, "items": [], "moves": [{"name": "Dynamic Punch", "count": 8}, {"name": "Reflect", "count": 4}, {"name": "Protect", "count": 4}, {"name": "Curse", "count": 4}], "turn1_moves": [{"name": "Reflect", "count": 2}, {"name": "Dynamic Punch", "count": 2}], "move_paths": [{"path": "Reflect -> Protect -> Dynamic Punch -> Dynamic Punch", "count": 2}, {"path": "Dynamic Punch -> Curse -> Reflect -> Protect", "count": 2}], "lead_move_paths": [{"path": "Reflect -> Protect -> Dynamic Punch -> Dynamic Punch", "count": 2}, {"path": "Dynamic Punch -> Curse -> Reflect -> Protect", "count": 2}], "nonlead_move_paths": [], "teammates": [{"name": "Bronzong", "count": 6}, {"name": "Clefable", "count": 6}, {"name": "Gothitelle", "count": 6}, {"name": "Incineroar", "count": 6}, {"name": "Lapras", "count": 6}], "teams": [{"signature": "Bronzong / Clefable / Golurk / Gothitelle / Incineroar / Lapras", "count": 6}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Golurk</h4>
+                            <span class="muted">Gezien 6x · gebracht 4x · lead 4x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Dynamic Punch <strong>8x</strong></span>
+                                
+                                    <span class="insight-tag">Reflect <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Protect <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Curse <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Bronzong <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Clefable <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Gothitelle <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Incineroar <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Lapras <strong>6x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="gothitelle"
+                        data-mon='{"name": "Gothitelle", "seen": 6, "brought": 2, "lead": 2, "items": [], "moves": [{"name": "Fake Out", "count": 4}, {"name": "Protect", "count": 4}, {"name": "Trick Room", "count": 2}], "turn1_moves": [{"name": "Fake Out", "count": 2}], "move_paths": [{"path": "Fake Out -> Trick Room -> Protect -> Fake Out", "count": 2}], "lead_move_paths": [{"path": "Fake Out -> Trick Room -> Protect -> Fake Out", "count": 2}], "nonlead_move_paths": [], "teammates": [{"name": "Bronzong", "count": 6}, {"name": "Clefable", "count": 6}, {"name": "Golurk", "count": 6}, {"name": "Incineroar", "count": 6}, {"name": "Lapras", "count": 6}], "teams": [{"signature": "Bronzong / Clefable / Golurk / Gothitelle / Incineroar / Lapras", "count": 6}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Gothitelle</h4>
+                            <span class="muted">Gezien 6x · gebracht 2x · lead 2x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Fake Out <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Protect <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Trick Room <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Bronzong <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Clefable <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Golurk <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Incineroar <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Lapras <strong>6x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="lapras"
+                        data-mon='{"name": "Lapras", "seen": 6, "brought": 6, "lead": 2, "items": [], "moves": [{"name": "Sheer Cold", "count": 16}, {"name": "Perish Song", "count": 4}, {"name": "Substitute", "count": 2}, {"name": "Protect", "count": 2}], "turn1_moves": [{"name": "Perish Song", "count": 2}], "move_paths": [{"path": "Perish Song -> Substitute -> Sheer Cold -> Sheer Cold", "count": 2}, {"path": "Sheer Cold -> Sheer Cold -> Sheer Cold -> Sheer Cold", "count": 2}, {"path": "Sheer Cold -> Perish Song -> Protect", "count": 2}], "lead_move_paths": [{"path": "Perish Song -> Substitute -> Sheer Cold -> Sheer Cold", "count": 2}], "nonlead_move_paths": [{"path": "Sheer Cold -> Sheer Cold -> Sheer Cold -> Sheer Cold", "count": 2}, {"path": "Sheer Cold -> Perish Song -> Protect", "count": 2}], "teammates": [{"name": "Bronzong", "count": 6}, {"name": "Clefable", "count": 6}, {"name": "Golurk", "count": 6}, {"name": "Gothitelle", "count": 6}, {"name": "Incineroar", "count": 6}], "teams": [{"signature": "Bronzong / Clefable / Golurk / Gothitelle / Incineroar / Lapras", "count": 6}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Lapras</h4>
+                            <span class="muted">Gezien 6x · gebracht 6x · lead 2x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Sheer Cold <strong>16x</strong></span>
+                                
+                                    <span class="insight-tag">Perish Song <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Substitute <strong>2x</strong></span>
+                                
+                                    <span class="insight-tag">Protect <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Bronzong <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Clefable <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Golurk <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Gothitelle <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Incineroar <strong>6x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="electivire"
+                        data-mon='{"name": "Electivire", "seen": 4, "brought": 0, "lead": 0, "items": [], "moves": [], "turn1_moves": [], "move_paths": [], "lead_move_paths": [], "nonlead_move_paths": [], "teammates": [{"name": "Flamigo", "count": 4}, {"name": "Iron Bundle", "count": 4}, {"name": "Kleavor", "count": 4}, {"name": "Magmortar", "count": 4}, {"name": "Regidrago", "count": 4}], "teams": [{"signature": "Electivire / Flamigo / Iron Bundle / Kleavor / Magmortar / Regidrago", "count": 4}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Electivire</h4>
+                            <span class="muted">Gezien 4x · gebracht 0x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen moves gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Flamigo <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Iron Bundle <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Kleavor <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Magmortar <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Regidrago <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="flamigo"
+                        data-mon='{"name": "Flamigo", "seen": 4, "brought": 2, "lead": 0, "items": [], "moves": [{"name": "U-turn", "count": 2}], "turn1_moves": [], "move_paths": [{"path": "U-turn", "count": 2}], "lead_move_paths": [], "nonlead_move_paths": [{"path": "U-turn", "count": 2}], "teammates": [{"name": "Electivire", "count": 4}, {"name": "Iron Bundle", "count": 4}, {"name": "Kleavor", "count": 4}, {"name": "Magmortar", "count": 4}, {"name": "Regidrago", "count": 4}], "teams": [{"signature": "Electivire / Flamigo / Iron Bundle / Kleavor / Magmortar / Regidrago", "count": 4}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Flamigo</h4>
+                            <span class="muted">Gezien 4x · gebracht 2x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">U-turn <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Electivire <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Iron Bundle <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Kleavor <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Magmortar <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Regidrago <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="iron bundle"
+                        data-mon='{"name": "Iron Bundle", "seen": 4, "brought": 4, "lead": 4, "items": [{"name": "Booster Energy", "count": 4}], "moves": [{"name": "Freeze-Dry", "count": 8}, {"name": "Icy Wind", "count": 6}, {"name": "Hydro Pump", "count": 6}, {"name": "Protect", "count": 2}], "turn1_moves": [{"name": "Protect", "count": 2}, {"name": "Icy Wind", "count": 2}], "move_paths": [{"path": "Protect -> Icy Wind -> Hydro Pump -> Hydro Pump", "count": 2}, {"path": "Icy Wind -> Hydro Pump -> Freeze-Dry -> Freeze-Dry", "count": 2}], "lead_move_paths": [{"path": "Protect -> Icy Wind -> Hydro Pump -> Hydro Pump", "count": 2}, {"path": "Icy Wind -> Hydro Pump -> Freeze-Dry -> Freeze-Dry", "count": 2}], "nonlead_move_paths": [], "teammates": [{"name": "Electivire", "count": 4}, {"name": "Flamigo", "count": 4}, {"name": "Kleavor", "count": 4}, {"name": "Magmortar", "count": 4}, {"name": "Regidrago", "count": 4}], "teams": [{"signature": "Electivire / Flamigo / Iron Bundle / Kleavor / Magmortar / Regidrago", "count": 4}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Iron Bundle</h4>
+                            <span class="muted">Gezien 4x · gebracht 4x · lead 4x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Booster Energy <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Freeze-Dry <strong>8x</strong></span>
+                                
+                                    <span class="insight-tag">Icy Wind <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Hydro Pump <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Protect <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Electivire <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Flamigo <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Kleavor <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Magmortar <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Regidrago <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="kleavor"
+                        data-mon='{"name": "Kleavor", "seen": 4, "brought": 0, "lead": 0, "items": [], "moves": [], "turn1_moves": [], "move_paths": [], "lead_move_paths": [], "nonlead_move_paths": [], "teammates": [{"name": "Electivire", "count": 4}, {"name": "Flamigo", "count": 4}, {"name": "Iron Bundle", "count": 4}, {"name": "Magmortar", "count": 4}, {"name": "Regidrago", "count": 4}], "teams": [{"signature": "Electivire / Flamigo / Iron Bundle / Kleavor / Magmortar / Regidrago", "count": 4}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Kleavor</h4>
+                            <span class="muted">Gezien 4x · gebracht 0x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen moves gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Electivire <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Flamigo <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Iron Bundle <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Magmortar <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Regidrago <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="magmortar"
+                        data-mon='{"name": "Magmortar", "seen": 4, "brought": 4, "lead": 4, "items": [], "moves": [{"name": "Heat Wave", "count": 8}, {"name": "Follow Me", "count": 4}, {"name": "Protect", "count": 2}], "turn1_moves": [{"name": "Protect", "count": 2}, {"name": "Follow Me", "count": 2}], "move_paths": [{"path": "Protect", "count": 2}, {"path": "Follow Me -> Heat Wave -> Follow Me -> Heat Wave", "count": 2}], "lead_move_paths": [{"path": "Protect", "count": 2}, {"path": "Follow Me -> Heat Wave -> Follow Me -> Heat Wave", "count": 2}], "nonlead_move_paths": [], "teammates": [{"name": "Electivire", "count": 4}, {"name": "Flamigo", "count": 4}, {"name": "Iron Bundle", "count": 4}, {"name": "Kleavor", "count": 4}, {"name": "Regidrago", "count": 4}], "teams": [{"signature": "Electivire / Flamigo / Iron Bundle / Kleavor / Magmortar / Regidrago", "count": 4}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Magmortar</h4>
+                            <span class="muted">Gezien 4x · gebracht 4x · lead 4x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="muted">Geen items gezien</span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Heat Wave <strong>8x</strong></span>
+                                
+                                    <span class="insight-tag">Follow Me <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Protect <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Electivire <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Flamigo <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Iron Bundle <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Kleavor <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Regidrago <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+                    <article
+                        class="prep-insight-card pokemon-card"
+                        data-name="regidrago"
+                        data-mon='{"name": "Regidrago", "seen": 4, "brought": 2, "lead": 0, "items": [{"name": "White Herb", "count": 2}], "moves": [{"name": "Dragon Energy", "count": 6}, {"name": "Draco Meteor", "count": 2}], "turn1_moves": [], "move_paths": [{"path": "Draco Meteor -> Dragon Energy -> Dragon Energy -> Dragon Energy", "count": 2}], "lead_move_paths": [], "nonlead_move_paths": [{"path": "Draco Meteor -> Dragon Energy -> Dragon Energy -> Dragon Energy", "count": 2}], "teammates": [{"name": "Electivire", "count": 4}, {"name": "Flamigo", "count": 4}, {"name": "Iron Bundle", "count": 4}, {"name": "Kleavor", "count": 4}, {"name": "Magmortar", "count": 4}], "teams": [{"signature": "Electivire / Flamigo / Iron Bundle / Kleavor / Magmortar / Regidrago", "count": 4}]}'
+                        data-team-matches='25'
+                    >
+                        <header>
+                            <h4>Regidrago</h4>
+                            <span class="muted">Gezien 4x · gebracht 2x · lead 0x</span>
+                        </header>
+                        <div>
+                            <span class="insight-label">Items</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">White Herb <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Moves</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Dragon Energy <strong>6x</strong></span>
+                                
+                                    <span class="insight-tag">Draco Meteor <strong>2x</strong></span>
+                                
+                            </div>
+                        </div>
+                        <div>
+                            <span class="insight-label">Teammates</span>
+                            <div class="insight-tags">
+                                
+                                    <span class="insight-tag">Electivire <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Flamigo <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Iron Bundle <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Kleavor <strong>4x</strong></span>
+                                
+                                    <span class="insight-tag">Magmortar <strong>4x</strong></span>
+                                
+                            </div>
+                        </div>
+                    </article>
+                
+            </section>
+        
+    </main>
+
+    <div class="modal" id="mon-modal" aria-hidden="true">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="mon-modal-title">Pokemon details</h3>
+                <button type="button" class="button" id="mon-modal-close">Sluiten</button>
+            </header>
+            <div class="modal-body">
+                <div class="insight-tags" id="mon-modal-stats"></div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Lead flowchart</span>
+                    <div class="mini-flow" id="mon-modal-flow-lead"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Non-lead flowchart</span>
+                    <div class="mini-flow" id="mon-modal-flow-nonlead"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Top moves</span>
+                    <div class="insight-tags" id="mon-modal-moves"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Top turn 1 moves</span>
+                    <div class="insight-tags" id="mon-modal-turn1"></div>
+                </div>
+                <div class="prep-insight-card">
+                    <span class="insight-label">Top teammates</span>
+                    <div class="insight-tags" id="mon-modal-teammates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const prepTeamSelectStatic = document.getElementById('prep-team-select-static');
+        prepTeamSelectStatic?.addEventListener('change', () => {
+            const target = prepTeamSelectStatic.value;
+            if (target) {
+                window.location.href = target;
+            }
+        });
+
+        const pokemonSearch = document.getElementById('pokemon-search');
+        const pokemonGrid = document.getElementById('pokemon-grid');
+        const monModal = document.getElementById('mon-modal');
+        const monModalTitle = document.getElementById('mon-modal-title');
+        const monModalStats = document.getElementById('mon-modal-stats');
+        const monModalFlowLead = document.getElementById('mon-modal-flow-lead');
+        const monModalFlowNonLead = document.getElementById('mon-modal-flow-nonlead');
+        const monModalMoves = document.getElementById('mon-modal-moves');
+        const monModalTurn1 = document.getElementById('mon-modal-turn1');
+        const monModalTeammates = document.getElementById('mon-modal-teammates');
+        const monModalClose = document.getElementById('mon-modal-close');
+        const MIN_PATH_COUNT = 3;
+
+        const filterPokemonCards = () => {
+            if (!pokemonSearch || !pokemonGrid) return;
+            const query = pokemonSearch.value.trim().toLowerCase();
+            pokemonGrid.querySelectorAll('.pokemon-card').forEach((card) => {
+                const name = card.getAttribute('data-name') || '';
+                card.style.display = !query || name.includes(query) ? '' : 'none';
+            });
+        };
+
+        const renderTags = (container, rows, emptyText) => {
+            if (!container) return;
+            if (!Array.isArray(rows) || rows.length === 0) {
+                container.innerHTML = `<span class="muted">${emptyText}</span>`;
+                return;
+            }
+            container.innerHTML = rows.slice(0, 10)
+                .map((row) => `<span class="insight-tag">${row.name} <strong>${row.count}x</strong></span>`)
+                .join('');
+        };
+
+        const renderPathFlow = (container, monName, headerText, movePaths, summaryText) => {
+            if (!container) return;
+            const filteredPaths = Array.isArray(movePaths)
+                ? movePaths.filter((entry) => Number(entry?.count || 0) >= MIN_PATH_COUNT)
+                : [];
+            if (filteredPaths.length === 0) {
+                container.innerHTML = `
+                    <div class="mini-flow-step">Start: zie ${monName}</div>
+                    <div class="mini-flow-arrow">↓</div>
+                    <div class="mini-flow-step">${headerText}: nog geen pad met minstens ${MIN_PATH_COUNT} waarnemingen.</div>
+                `;
+                return;
+            }
+            const pathHtml = filteredPaths.slice(0, 4).map((entry, index) => {
+                const rawPath = String(entry?.path || '');
+                const steps = rawPath.split(' -> ').map((step) => step.trim()).filter(Boolean);
+                const stepsHtml = steps
+                    .map((step) => `<span class="mini-flow-step-pill">${step}</span>`)
+                    .join('<span class="mini-flow-arrow-inline">-></span>');
+                const count = Number(entry?.count || 0);
+                return `
+                    <div class="mini-flow-branch">
+                        <strong>Pad ${index + 1} (${count}x)</strong>
+                        <span>${stepsHtml || 'Geen stappen'}</span>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = `
+                <div class="mini-flow-step">Start: zie ${monName}</div>
+                <div class="mini-flow-arrow">↓</div>
+                <div class="mini-flow-step">${headerText} · ${summaryText} · filter n >= ${MIN_PATH_COUNT}</div>
+                <div class="mini-flow-split">${pathHtml}</div>
+            `;
+        };
+
+        const openMonModal = (mon, matchesWithData) => {
+            if (!monModal || !monModalTitle) return;
+            const seen = Number(mon?.seen || 0);
+            const brought = Number(mon?.brought || 0);
+            const lead = Number(mon?.lead || 0);
+            const matches = Number(matchesWithData || 0);
+            const leadRate = brought > 0 ? Math.round((lead / brought) * 100) : 0;
+            const broughtRate = matches > 0 ? Math.round((brought / matches) * 100) : 0;
+
+            monModalTitle.textContent = `${mon?.name || 'Pokemon'} · extra stats`;
+            monModalStats.innerHTML = `
+                <span class="insight-tag">Gezien <strong>${seen}x</strong></span>
+                <span class="insight-tag">Gebracht <strong>${brought}x (${broughtRate}%)</strong></span>
+                <span class="insight-tag">Lead <strong>${lead}x (${leadRate}%)</strong></span>
+            `;
+
+            const leadPaths = Array.isArray(mon?.lead_move_paths) ? mon.lead_move_paths : [];
+            const nonLeadPaths = Array.isArray(mon?.nonlead_move_paths) ? mon.nonlead_move_paths : [];
+            renderPathFlow(monModalFlowLead, mon?.name || 'deze Pokemon', 'Lead situaties', leadPaths, `lead rate ${leadRate}%`);
+            renderPathFlow(monModalFlowNonLead, mon?.name || 'deze Pokemon', 'Non-lead situaties', nonLeadPaths, `gebracht rate ${broughtRate}%`);
+
+            renderTags(monModalMoves, mon?.moves, 'Geen moves gezien');
+            renderTags(monModalTurn1, mon?.turn1_moves, 'Geen turn 1 moves gezien');
+            renderTags(monModalTeammates, mon?.teammates, 'Geen teammates gezien');
+
+            monModal.classList.add('open');
+            monModal.setAttribute('aria-hidden', 'false');
+        };
+
+        pokemonSearch?.addEventListener('input', filterPokemonCards);
+
+        pokemonGrid?.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) return;
+            const card = target.closest('.pokemon-card');
+            if (!card) return;
+            const rawMon = card.getAttribute('data-mon');
+            if (!rawMon) return;
+            let mon;
+            try {
+                mon = JSON.parse(rawMon);
+            } catch (error) {
+                return;
+            }
+            const matchesWithData = Number(card.getAttribute('data-team-matches') || 0);
+            openMonModal(mon, matchesWithData);
+        });
+
+        monModalClose?.addEventListener('click', () => {
+            monModal?.classList.remove('open');
+            monModal?.setAttribute('aria-hidden', 'true');
+        });
+
+        monModal?.addEventListener('click', (event) => {
+            if (event.target === monModal) {
+                monModal.classList.remove('open');
+                monModal.setAttribute('aria-hidden', 'true');
+            }
+        });
+    </script>
+</body>
+</html>
