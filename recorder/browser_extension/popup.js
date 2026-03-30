@@ -3,7 +3,6 @@ const PREP_TEAMS_URL = `${LOCAL_BASE_URL}/api/prep_teams`;
 const STORAGE_KEY_REPLAY_LIST = "replayList";
 const STORAGE_KEY_TEAM_ID = "selectedTeamId";
 const STORAGE_KEY_TEAM_NAME = "selectedTeamName";
-const STORAGE_KEY_AUTO_TRACK = "autoTrack";
 
 const statusEl = document.getElementById("status");
 const teamSelect = document.getElementById("team-select");
@@ -11,7 +10,9 @@ const replayInput = document.getElementById("replay-input");
 const replayListInput = document.getElementById("replay-list");
 const saveReplayButton = document.getElementById("save-replay");
 const sendReplaysButton = document.getElementById("send-replays");
-const autoTrackToggle = document.getElementById("auto-track-toggle");
+const activityListEl = document.getElementById("activity-list");
+const activityEmptyEl = document.getElementById("activity-empty");
+let activityIntervalId = null;
 
 function setStatus(text, isError = false) {
     statusEl.textContent = text;
@@ -51,18 +52,63 @@ async function restore() {
         [STORAGE_KEY_REPLAY_LIST]: "",
         [STORAGE_KEY_TEAM_ID]: "",
         [STORAGE_KEY_TEAM_NAME]: "",
-        [STORAGE_KEY_AUTO_TRACK]: true,
     });
     replayListInput.value = (data[STORAGE_KEY_REPLAY_LIST] || "").trim();
-    autoTrackToggle.checked = data[STORAGE_KEY_AUTO_TRACK] !== false;
     await loadTeams(data[STORAGE_KEY_TEAM_ID], data[STORAGE_KEY_TEAM_NAME]);
     await refreshQueueStatus();
+    await refreshRecentActivity();
 }
 
-async function persistAutoTrackToggle() {
-    const enabled = autoTrackToggle.checked;
-    await setStorage({ [STORAGE_KEY_AUTO_TRACK]: enabled });
-    setStatus(enabled ? "Auto-track aan." : "Auto-track uit.");
+function formatTime(value) {
+    const parsed = new Date(value || "");
+    if (Number.isNaN(parsed.getTime())) {
+        return "--:--:--";
+    }
+    return parsed.toLocaleTimeString();
+}
+
+function renderRecentActivity(entries) {
+    activityListEl.innerHTML = "";
+    const rows = Array.isArray(entries) ? entries : [];
+    activityEmptyEl.style.display = rows.length ? "none" : "block";
+
+    for (const entry of rows) {
+        const item = document.createElement("li");
+        item.className = "activity-item";
+
+        const meta = document.createElement("div");
+        meta.className = "activity-meta";
+
+        const left = document.createElement("span");
+        left.className = `activity-status ${String(entry?.status || "info").toLowerCase()}`;
+        left.textContent = `${String(entry?.status || "info")} • ${String(entry?.source || "live")}`;
+
+        const right = document.createElement("span");
+        right.textContent = formatTime(entry?.time);
+
+        meta.appendChild(left);
+        meta.appendChild(right);
+
+        const preview = document.createElement("div");
+        preview.className = "activity-preview";
+        const type = String(entry?.type || "unknown");
+        const label = String(entry?.label || "LIVE").trim();
+        const text = String(entry?.preview || "").trim();
+        const prefix = `[${label}] [${type}]`;
+        preview.textContent = text ? `${prefix} ${text}` : prefix;
+
+        item.appendChild(meta);
+        item.appendChild(preview);
+        activityListEl.appendChild(item);
+    }
+}
+
+async function refreshRecentActivity() {
+    const response = await sendMessage({ action: "RECENT_ACTIVITY", limit: 30 });
+    if (!response?.ok) {
+        return;
+    }
+    renderRecentActivity(response.entries || []);
 }
 
 async function refreshQueueStatus() {
@@ -219,28 +265,52 @@ async function sendReplaysToApi() {
     } else if (result.queued) {
         setStatus(`API offline: opgeslagen in wachtrij (${result.queueCount}).`);
     }
+    await refreshRecentActivity();
 }
 
 async function flushQueueNow() {
     const response = await sendMessage({ action: "FLUSH_QUEUE_NOW" });
     if (!response?.ok) {
         setStatus("Wachtrij flush mislukt.", true);
+        await refreshRecentActivity();
         return;
     }
     if (response.remaining > 0) {
         setStatus(`Nog ${response.remaining} in wachtrij.`);
+        await refreshRecentActivity();
         return;
     }
     if (response.sent > 0) {
         setStatus(`Wachtrij verstuurd (${response.sent}).`);
+        await refreshRecentActivity();
         return;
     }
     setStatus("Geen pending items in wachtrij.");
+    await refreshRecentActivity();
 }
 saveReplayButton.addEventListener("click", saveReplay);
 sendReplaysButton.addEventListener("click", sendReplaysToApi);
 replayListInput.addEventListener("blur", persistReplayList);
 teamSelect.addEventListener("change", persistSelectedTeam);
-autoTrackToggle.addEventListener("change", persistAutoTrackToggle);
 window.addEventListener("focus", flushQueueNow);
+window.addEventListener("focus", refreshRecentActivity);
+chrome.runtime.onMessage.addListener((message) => {
+    if (message?.action !== "ACTIVITY_PUSH") {
+        return;
+    }
+    refreshRecentActivity();
+});
+window.addEventListener("load", () => {
+    if (activityIntervalId) {
+        clearInterval(activityIntervalId);
+    }
+    activityIntervalId = setInterval(refreshRecentActivity, 1500);
+});
+window.addEventListener("unload", () => {
+    if (!activityIntervalId) {
+        return;
+    }
+    clearInterval(activityIntervalId);
+    activityIntervalId = null;
+});
 restore();

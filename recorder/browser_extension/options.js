@@ -1,5 +1,4 @@
 const DEFAULT_API_URL = "http://127.0.0.1:5000/api/ingest_line";
-const STORAGE_KEY_AUTO_TRACK = "autoTrack";
 
 function getStorage(keys) {
     return new Promise((resolve) => {
@@ -17,12 +16,10 @@ async function restore() {
     const data = await getStorage({
         apiUrl: DEFAULT_API_URL,
         enabled: true,
-        [STORAGE_KEY_AUTO_TRACK]: true,
     });
 
     document.getElementById("apiUrl").value = data.apiUrl || DEFAULT_API_URL;
     document.getElementById("enabled").checked = data.enabled !== false;
-    document.getElementById("autoTrack").checked = data[STORAGE_KEY_AUTO_TRACK] !== false;
 }
 
 function showStatus(text) {
@@ -36,9 +33,8 @@ function showStatus(text) {
 async function save() {
     const apiUrl = (document.getElementById("apiUrl").value || "").trim() || DEFAULT_API_URL;
     const enabled = document.getElementById("enabled").checked;
-    const autoTrack = document.getElementById("autoTrack").checked;
 
-    await setStorage({ apiUrl, enabled, [STORAGE_KEY_AUTO_TRACK]: autoTrack });
+    await setStorage({ apiUrl, enabled });
     showStatus("Instellingen opgeslagen.");
 }
 

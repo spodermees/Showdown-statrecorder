@@ -176,6 +176,7 @@ def init_db() -> None:
         );
         """
     )
+    _ensure_column(db, "match_state", "hp_pct_json", "TEXT")
     db.execute(
         """
         CREATE TABLE IF NOT EXISTS events (
@@ -979,6 +980,16 @@ def _team_entry_aliases(team_id: int) -> list[str]:
 
 
 def build_damage_select_options(team_entries: Iterable[dict], unique_names: Iterable[str]) -> tuple[list[str], list[str]]:
+    def _is_plausible_battle_name(value: str) -> bool:
+        normalized = normalize_name(value)
+        if not normalized:
+            return False
+        if len(normalized) > 48:
+            return False
+        if normalized.count(" ") > 4:
+            return False
+        return True
+
     names_in_logs: list[str] = []
     seen_log_names: set[str] = set()
     for raw_name in unique_names:
@@ -986,12 +997,37 @@ def build_damage_select_options(team_entries: Iterable[dict], unique_names: Iter
         normalized = normalize_name(name)
         if not name or not normalized or normalized in seen_log_names:
             continue
+        if not _is_plausible_battle_name(name):
+            continue
         names_in_logs.append(name)
         seen_log_names.add(normalized)
 
+    team_entries_list = [dict(entry) for entry in team_entries]
+
+    def _name_variants(value: str) -> list[str]:
+        variants: list[str] = []
+        candidate = str(value or "").strip()
+        while candidate:
+            variants.append(candidate)
+            stripped = re.sub(r"\s*\([^)]*\)\s*$", "", candidate).strip()
+            if not stripped or stripped == candidate:
+                break
+            candidate = stripped
+        return variants
+
+    nickname_aliases: list[str] = []
+    nickname_norms: set[str] = set()
+    for entry in team_entries_list:
+        for name in _name_variants(str(entry.get("nickname") or "")):
+            normalized = normalize_name(name)
+            if not name or not normalized or normalized in nickname_norms:
+                continue
+            nickname_aliases.append(name)
+            nickname_norms.add(normalized)
+
     alias_names: list[str] = []
     alias_norms: set[str] = set()
-    for entry in team_entries:
+    for entry in team_entries_list:
         for field in ("nickname", "species"):
             name = str(entry.get(field) or "").strip()
             normalized = normalize_name(name)
@@ -1000,18 +1036,14 @@ def build_damage_select_options(team_entries: Iterable[dict], unique_names: Iter
             alias_names.append(name)
             alias_norms.add(normalized)
 
-    mine_options = [name for name in names_in_logs if normalize_name(name) in alias_norms]
-    if not mine_options and alias_norms:
-        mine_options = [
-            name
-            for name in names_in_logs
-            if any(
-                normalize_name(name) in alias_norm or alias_norm in normalize_name(name)
-                for alias_norm in alias_norms
-            )
-        ]
-    if not mine_options:
-        mine_options = alias_names or [name for name in MY_POKEMON_PRESET if str(name).strip()]
+    if nickname_norms:
+        mine_options = [name for name in names_in_logs if normalize_name(name) in nickname_norms]
+        if not mine_options:
+            mine_options = nickname_aliases
+    else:
+        mine_options = [name for name in names_in_logs if normalize_name(name) in alias_norms]
+        if not mine_options:
+            mine_options = alias_names or [name for name in MY_POKEMON_PRESET if str(name).strip()]
 
     mine_norms = {normalize_name(name) for name in mine_options if normalize_name(name)}
     opponent_options = [name for name in names_in_logs if normalize_name(name) not in mine_norms]
@@ -1236,14 +1268,8 @@ def parse_replay_line(line: str) -> dict:
     return result
 
 
-def get_or_create_live_match(team_id: int) -> int:
+def _create_new_live_match(team_id: int) -> int:
     db = get_db()
-    row = db.execute(
-        "SELECT id FROM matches WHERE name = ? AND team_id = ? ORDER BY id DESC LIMIT 1",
-        ("Live", team_id),
-    ).fetchone()
-    if row:
-        return row["id"]
     cursor = db.execute(
         "INSERT INTO matches (name, created_at, team_id) VALUES (?, ?, ?)",
         ("Live", datetime.utcnow().isoformat(timespec="seconds"), team_id),
@@ -1257,10 +1283,21 @@ def get_or_create_live_match(team_id: int) -> int:
     return match_id
 
 
+def get_or_create_live_match(team_id: int) -> int:
+    db = get_db()
+    row = db.execute(
+        "SELECT id FROM matches WHERE name = ? AND team_id = ? ORDER BY id DESC LIMIT 1",
+        ("Live", team_id),
+    ).fetchone()
+    if row:
+        return row["id"]
+    return _create_new_live_match(team_id)
+
+
 def get_match_state(match_id: int) -> dict:
     db = get_db()
     row = db.execute(
-        "SELECT last_turn, last_actor, last_move FROM match_state WHERE match_id = ?",
+        "SELECT last_turn, last_actor, last_move, hp_pct_json FROM match_state WHERE match_id = ?",
         (match_id,),
     ).fetchone()
     if row is None:
@@ -1269,23 +1306,32 @@ def get_match_state(match_id: int) -> dict:
             (match_id, None, None, None),
         )
         db.commit()
-        return {"turn": None, "last_actor": None, "last_move": None}
+        return {"turn": None, "last_actor": None, "last_move": None, "hp_pct": {}}
+    hp_pct: dict = {}
+    try:
+        hp_pct = json.loads(row["hp_pct_json"] or "{}") or {}
+    except Exception:
+        hp_pct = {}
     return {
         "turn": row["last_turn"],
         "last_actor": row["last_actor"],
         "last_move": row["last_move"],
+        "hp_pct": hp_pct,
     }
 
 
 def update_match_state(match_id: int, state: dict) -> None:
     db = get_db()
+    hp_pct = state.get("hp_pct") or {}
+    hp_pct_json = json.dumps(hp_pct) if hp_pct else None
     db.execute(
-        "INSERT OR REPLACE INTO match_state (match_id, last_turn, last_actor, last_move) VALUES (?, ?, ?, ?)",
+        "INSERT OR REPLACE INTO match_state (match_id, last_turn, last_actor, last_move, hp_pct_json) VALUES (?, ?, ?, ?, ?)",
         (
             match_id,
             state.get("turn"),
             state.get("last_actor"),
             state.get("last_move"),
+            hp_pct_json,
         ),
     )
     db.commit()
@@ -1474,7 +1520,10 @@ def _normalize_pokepaste_url(url: str) -> str | None:
 def _parse_pokepaste_nicknames(raw_text: str) -> list[dict]:
     results: list[dict] = []
     header_pattern = re.compile(r"^(?P<name>.+?)\s+@\s+.+$")
-    nickname_pattern = re.compile(r"^(?P<nick>.+?)\s+\((?P<species>[^)]+)\)$")
+    nickname_pattern = re.compile(
+        r"^(?P<nick>.+?)\s+\((?P<species>[^)]+)\)(?:\s+\((?:M|F|Genderless)\))?$",
+        re.IGNORECASE,
+    )
     for line in raw_text.splitlines():
         line = line.strip()
         if not line:
@@ -2123,6 +2172,14 @@ def api_ingest_options():
     return {"status": "ok"}
 
 
+def _is_battle_start_line(line: str) -> bool:
+    if line == "|start":
+        return True
+    if START_PATTERN.match(line):
+        return True
+    return False
+
+
 @app.route("/api/ingest_line", methods=["POST"])
 def api_ingest_line():
     data = request.get_json(silent=True) or {}
@@ -2131,7 +2188,10 @@ def api_ingest_line():
         return {"status": "ignored"}
 
     team_id = resolve_team_id(data.get("team_id") or request.args.get("team_id"))
-    match_id = get_or_create_live_match(team_id)
+    if _is_battle_start_line(line):
+        match_id = _create_new_live_match(team_id)
+    else:
+        match_id = get_or_create_live_match(team_id)
     state = get_match_state(match_id)
     events, new_state, log_lines = parse_log_stream([line], state=state)
     apply_match_meta(match_id, parse_match_meta([line]))

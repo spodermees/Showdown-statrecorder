@@ -173,6 +173,62 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
+        .activity-box {
+            border: 1px solid #315ca3;
+            border-radius: 10px;
+            background: rgba(11, 30, 74, 0.78);
+            max-height: 150px;
+            overflow: auto;
+            padding: 6px;
+        }
+        .activity-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 6px;
+        }
+        .activity-item {
+            border: 1px solid rgba(78, 121, 194, 0.55);
+            border-radius: 8px;
+            padding: 6px;
+            background: rgba(20, 52, 120, 0.6);
+        }
+        .activity-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #dce7ff;
+            margin-bottom: 2px;
+        }
+        .activity-status {
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .activity-status.sent {
+            color: #b8ffd0;
+        }
+        .activity-status.queued {
+            color: #ffe69a;
+        }
+        .activity-status.dropped,
+        .activity-status.error {
+            color: #ffd0cc;
+        }
+        .activity-preview {
+            font-size: 11px;
+            line-height: 1.3;
+            color: #fff8e1;
+            word-break: break-word;
+        }
+        .activity-empty {
+            font-size: 11px;
+            color: #dce7ff;
+            opacity: 0.85;
+            padding: 4px;
+        }
     </style>
 </head>
 <body>
@@ -183,11 +239,6 @@
         <div class="field">
             <label for="team-select">Team</label>
             <select id="team-select" aria-label="Selecteer team"></select>
-        </div>
-
-        <div class="field" style="display:flex; align-items:center; gap:8px;">
-            <input id="auto-track-toggle" type="checkbox" style="width:auto;" />
-            <label for="auto-track-toggle" style="margin:0;">Auto-track live battlelog</label>
         </div>
 
         <div class="field">
@@ -203,6 +254,14 @@
         <div class="field">
             <label for="replay-list">Opgeslagen replays (1 per regel)</label>
             <textarea id="replay-list" placeholder="https://replay.pokemonshowdown.com/...\nhttps://replay.pokemonshowdown.com/..."></textarea>
+        </div>
+
+        <div class="field">
+            <label>Recent verzonden</label>
+            <div class="activity-box">
+                <ul id="activity-list" class="activity-list"></ul>
+                <div id="activity-empty" class="activity-empty">Nog geen verzendactiviteit.</div>
+            </div>
         </div>
         <div id="status"></div>
     </div>

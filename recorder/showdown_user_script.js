@@ -11,7 +11,7 @@
 
 (() => {
     const API_URL = "http://127.0.0.1:5000/api/ingest_line";
-    const seen = new WeakSet();
+    const lastLineByNode = new WeakMap();
     let sentCount = 0;
 
     function ensureBadge() {
@@ -28,6 +28,16 @@
 
     function cleanLine(text) {
         return text.replace(/\s+/g, " ").trim();
+    }
+
+    function isLeafMessage(node) {
+        for (const child of node.children) {
+            const tag = child.tagName.toLowerCase();
+            if (["div", "p", "h1", "h2", "h3", "ul", "ol", "li", "table"].includes(tag)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     async function sendLine(line) {
@@ -49,21 +59,22 @@
     }
 
     function readLogLines(logRoot) {
-        const nodes = logRoot.querySelectorAll(".chat, .battle-log, .message, div");
+        const nodes = logRoot.querySelectorAll(".chat, .chatmessage, .message, h2, p, li, div");
         nodes.forEach((node) => {
-            if (seen.has(node)) return;
+            if (!isLeafMessage(node)) return;
             const line = cleanLine(node.textContent || "");
-            if (line) {
-                seen.add(node);
-                sendLine(line);
-            }
+            if (!line || line.length < 2) return;
+            const lastLine = lastLineByNode.get(node);
+            if (lastLine === line) return;
+            lastLineByNode.set(node, line);
+            sendLine(line);
         });
     }
 
     function attachObserver(logRoot) {
         readLogLines(logRoot);
         const observer = new MutationObserver(() => readLogLines(logRoot));
-        observer.observe(logRoot, { childList: true, subtree: true });
+        observer.observe(logRoot, { childList: true, subtree: true, characterData: true });
         ensureBadge().textContent = "Log sender: watching";
     }
 

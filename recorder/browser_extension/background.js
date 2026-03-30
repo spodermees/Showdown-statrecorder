@@ -3,6 +3,77 @@ const DEFAULT_BASE_URL = "http://127.0.0.1:5000";
 const QUEUE_KEY = "pendingApiQueue";
 const FLUSH_ALARM = "flushPendingApiQueue";
 const MAX_QUEUE_SIZE = 2000;
+const MAX_ACTIVITY_ITEMS = 80;
+const recentActivity = [];
+
+function clipText(value, maxLength = 140) {
+    const text = String(value || "").replace(/\s+/g, " ").trim();
+    if (text.length <= maxLength) {
+        return text;
+    }
+    return `${text.slice(0, maxLength - 1)}...`;
+}
+
+function itemPreview(item) {
+    if (!item || typeof item !== "object") {
+        return "";
+    }
+    if (item.type === "line") {
+        return clipText(item.line || "");
+    }
+    if (item.type === "replay_bulk") {
+        const count = Array.isArray(item.urls) ? item.urls.length : 0;
+        return `${count} replay(s) voor team ${Number(item.teamId) || "?"}`;
+    }
+    if (item.type === "poke") {
+        return `poke: ${clipText(item.reason || "unknown", 80)}`;
+    }
+    return clipText(JSON.stringify(item), 140);
+}
+
+function contextLabel(context) {
+    if (!context || typeof context !== "object") {
+        return "LIVE";
+    }
+    if (context.phase === "leads") {
+        return "LEADS";
+    }
+    if (context.phase === "turn") {
+        const turn = Number(context.turn);
+        if (Number.isFinite(turn) && turn > 0) {
+            return `TURN ${turn}`;
+        }
+        return "TURN";
+    }
+    return "LIVE";
+}
+
+function pushActivity(status, item, meta = {}) {
+    const entry = {
+        time: new Date().toISOString(),
+        status: String(status || "info"),
+        type: String(item?.type || "unknown"),
+        preview: itemPreview(item),
+        source: meta.source || "live",
+        label: contextLabel(item?.context),
+    };
+    recentActivity.push(entry);
+    if (recentActivity.length > MAX_ACTIVITY_ITEMS) {
+        recentActivity.splice(0, recentActivity.length - MAX_ACTIVITY_ITEMS);
+    }
+
+    try {
+        chrome.runtime.sendMessage({ action: "ACTIVITY_PUSH", entry }, () => {
+            void chrome.runtime.lastError;
+        });
+    } catch (_error) {
+    }
+}
+
+function getRecentActivity(limit = 25) {
+    const safeLimit = Math.max(1, Math.min(Number(limit) || 25, MAX_ACTIVITY_ITEMS));
+    return recentActivity.slice(-safeLimit).reverse();
+}
 
 function getSyncStorage(keys) {
     return new Promise((resolve) => {
@@ -142,11 +213,14 @@ async function flushQueue(limit = 120) {
         try {
             const result = await trySendItem(item, settings);
             if (!result.ok) {
+                pushActivity("error", item, { source: "queue" });
                 break;
             }
             pending.shift();
             sent += 1;
+            pushActivity("sent", item, { source: "queue" });
         } catch (_error) {
+            pushActivity("error", item, { source: "queue" });
             break;
         }
     }
@@ -155,26 +229,31 @@ async function flushQueue(limit = 120) {
     return { sent, remaining: pending.length };
 }
 
-async function sendOrQueueLine(line) {
+async function sendOrQueueLine(line, context) {
     const normalized = String(line || "").trim();
     if (!normalized) {
         return { ok: false, reason: "empty-line" };
     }
 
+    const lineItem = { type: "line", line: normalized, context: context || null };
+
     const settings = await getSettings();
     if (!settings.enabled) {
+        pushActivity("dropped", lineItem, { source: "live" });
         return { ok: true, dropped: true, queued: false, queueCount: await getQueueCount() };
     }
 
     try {
-        const result = await trySendItem({ type: "line", line: normalized }, settings);
+        const result = await trySendItem(lineItem, settings);
         if (result.ok) {
+            pushActivity("sent", lineItem, { source: "live" });
             return { ok: true, sent: true, queued: false, queueCount: await getQueueCount() };
         }
     } catch (_error) {
     }
 
-    const queueCount = await enqueue({ type: "line", line: normalized });
+    const queueCount = await enqueue(lineItem);
+    pushActivity("queued", lineItem, { source: "live" });
     return { ok: true, sent: false, queued: true, queueCount };
 }
 
@@ -196,6 +275,7 @@ async function sendOrQueueReplayBulk(urls, teamId) {
     try {
         const result = await trySendItem({ type: "replay_bulk", urls: cleanedUrls, teamId: teamValue }, settings);
         if (result.ok) {
+            pushActivity("sent", { type: "replay_bulk", urls: cleanedUrls, teamId: teamValue }, { source: "popup" });
             return {
                 ok: true,
                 sent: true,
@@ -212,6 +292,7 @@ async function sendOrQueueReplayBulk(urls, teamId) {
         urls: cleanedUrls,
         teamId: teamValue,
     });
+    pushActivity("queued", { type: "replay_bulk", urls: cleanedUrls, teamId: teamValue }, { source: "popup" });
 
     return { ok: true, sent: false, queued: true, queueCount };
 }
@@ -238,7 +319,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     const action = message?.action;
 
     if (action === "SEND_OR_QUEUE_LINE") {
-        sendOrQueueLine(message?.line)
+        sendOrQueueLine(message?.line, message?.context)
             .then((result) => sendResponse(result))
             .catch(() => sendResponse({ ok: false }));
         return true;
@@ -263,6 +344,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             .then((count) => sendResponse({ ok: true, count }))
             .catch(() => sendResponse({ ok: false, count: 0 }));
         return true;
+    }
+
+    if (action === "RECENT_ACTIVITY") {
+        const limit = Number(message?.limit) || 25;
+        sendResponse({ ok: true, entries: getRecentActivity(limit) });
+        return false;
     }
 
     if (action === "POKE") {
